@@ -8,39 +8,7 @@ import subprocess
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PACKAGE_ROOT = os.path.join(SCRIPT_DIR, "procgen")
 README = open(os.path.join(SCRIPT_DIR, "README.md"), "rb").read().decode("utf8")
-
-# dynamically determine version number based on git commit
-def determine_version():
-    version = open(os.path.join(PACKAGE_ROOT, "version.txt"), "r").read().strip()
-    sha = "unknown"
-
-    try:
-        sha = (
-            subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=SCRIPT_DIR)
-            .decode("ascii")
-            .strip()
-        )
-    except Exception:
-        pass
-
-    if "GITHUB_REF" in os.environ:
-        ref = os.environ["GITHUB_REF"]
-        parts = ref.split("/")
-        assert parts[0] == "refs"
-        if parts[1] == "tags":
-            tag = parts[2]
-            assert tag == version, "mismatch in tag vs version, expected: %s actual: %s" % (
-                tag,
-                version,
-            )
-            return version
-    
-    if sha == "unknown":
-        return version
-    else:
-        return version + "+" + sha[:7]
-
-version = determine_version()
+version = open(os.path.join(PACKAGE_ROOT, "version.txt"), "r").read().strip()
 
 # build shared library
 class DummyExtension(Extension):
@@ -83,13 +51,13 @@ asset_paths = glob.glob(os.path.join(PACKAGE_ROOT, "data", "**"), recursive=True
 asset_relpaths = [os.path.relpath(path, PACKAGE_ROOT) for path in asset_paths]
 
 setup(
-    name="procgen",
+    name="pufferai_procgen",
     packages=find_packages(),
     version=version,
     install_requires=[
         "numpy>=1.17.0,<2.0.0",
         "gym>=0.15.0,<1.0.0",
-        "gym3>=0.3.3,<1.0.0",
+        "pufferai-gym3>=0.3.3.2,<1.0.0",
         "filelock>=3.0.0,<4.0.0",
     ],
     python_requires=">=3.6.0",

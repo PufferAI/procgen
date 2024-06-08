@@ -8,7 +8,7 @@ setup(
         # rather than rely on system cmake, install it here
         "cmake==3.21.3",
         # this is required by procgen/build.py
-        "gym3==0.3.0",
+        "pufferai_gym3>=0.3.3.2",
     ],
 )
  
